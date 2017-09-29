@@ -30,6 +30,10 @@ export default new Vuex.Store({
 
         deleteTodo ({ todos }, todo) {
             todos.splice(todos.indexOf(todo), 1);
+        },
+
+        updateTodo ({ todos }, { todo, body }) {
+            todos[todos.indexOf(todo)].body = body;
         }
     }
 });

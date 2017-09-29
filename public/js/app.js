@@ -42868,6 +42868,13 @@ __WEBPACK_IMPORTED_MODULE_0_vue___default.a.use(__WEBPACK_IMPORTED_MODULE_1_vuex
             var todos = _ref3.todos;
 
             todos.splice(todos.indexOf(todo), 1);
+        },
+        updateTodo: function updateTodo(_ref4, _ref5) {
+            var todos = _ref4.todos;
+            var todo = _ref5.todo,
+                body = _ref5.body;
+
+            todos[todos.indexOf(todo)].body = body;
         }
     }
 }));
@@ -43402,6 +43409,11 @@ module.exports = function normalizeComponent (
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vuex__ = __webpack_require__(2);
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+//
+//
+//
 //
 //
 //
@@ -43416,7 +43428,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['todo'],
 
-    methods: Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapMutations */])(['deleteTodo', 'toggleTodo'])
+    data: function data() {
+        return {
+            body: this.todo.body,
+            editing: false
+        };
+    },
+
+
+    methods: _extends({}, Object(__WEBPACK_IMPORTED_MODULE_0_vuex__["b" /* mapMutations */])(['deleteTodo', 'toggleTodo', 'editTodo']), {
+        updateTodo: function updateTodo(e) {
+            this.$store.commit('updateTodo', {
+                todo: this.todo,
+                body: e.target.value
+            });
+
+            this.editing = false;
+        }
+    })
 });
 
 /***/ }),
@@ -43441,7 +43470,48 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("label", { domProps: { textContent: _vm._s(_vm.todo.body) } }),
+      _c("span", [
+        _c("label", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: !_vm.editing,
+              expression: "! editing"
+            }
+          ],
+          domProps: { textContent: _vm._s(_vm.todo.body) },
+          on: {
+            dblclick: function($event) {
+              _vm.editing = true
+            }
+          }
+        }),
+        _vm._v(" "),
+        _c("input", {
+          directives: [
+            {
+              name: "show",
+              rawName: "v-show",
+              value: _vm.editing,
+              expression: "editing"
+            }
+          ],
+          attrs: { autofocus: _vm.editing },
+          domProps: { value: _vm.todo.body },
+          on: {
+            keyup: function($event) {
+              if (
+                !("button" in $event) &&
+                _vm._k($event.keyCode, "enter", 13)
+              ) {
+                return null
+              }
+              _vm.updateTodo($event)
+            }
+          }
+        })
+      ]),
       _vm._v(" "),
       _c(
         "button",
